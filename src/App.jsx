@@ -403,6 +403,7 @@ const ChatPage = ({ currentUser, socket }) => {
     };
 
     return (
+        // **CHANGEMENT ICI** : Ajout de classes pour une meilleure gestion du flex sur mobile
         <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
             <div className="w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 flex flex-col">
                 <div className="p-4 border-b border-slate-200 dark:border-slate-700">
@@ -419,11 +420,12 @@ const ChatPage = ({ currentUser, socket }) => {
                     ))}
                 </ul>
             </div>
-            <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col bg-slate-50 dark:bg-slate-900">
+            {/* **CHANGEMENT ICI** : Ajout de flex-grow et min-h-0 pour forcer ce conteneur à remplir l'espace */}
+            <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col flex-grow min-h-0">
                 <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
                     <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">{activeChat.name}</h2>
                 </div>
-                <div className="flex-grow p-4 overflow-y-auto">
+                <div className="flex-grow p-4 overflow-y-auto bg-slate-50 dark:bg-slate-900">
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex mb-4 ${msg.senderId === currentUser.uid ? 'justify-end' : 'justify-start'}`}>
                             <div className={`rounded-xl px-4 py-2 max-w-xs md:max-w-md shadow-sm ${msg.senderId === currentUser.uid ? 'bg-sky-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200'}`}>
