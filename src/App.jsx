@@ -6,9 +6,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { io } from "socket.io-client";
 
 // --- Configuration ---
-const API_URL = 'https://studyhub-server-frejus.onrender.com'
-
-
+const API_URL = 'http://localhost:3001';
 
 // --- Icônes (Composants SVG) ---
 const HomeIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>;
@@ -243,13 +241,12 @@ const HomePage = ({ currentUser, handleSetPage, socket }) => {
     );
 };
 
-// **CHANGEMENT ICI** : La page Fichiers est entièrement modifiée pour corriger le téléchargement
 const FilesPage = () => {
     const { fetchWithAuth } = useApi();
     const [files, setFiles] = useState([]);
     const [error, setError] = useState('');
     const [uploading, setUploading] = useState(false);
-    const [downloading, setDownloading] = useState(null); // Pour savoir quel fichier est en cours de DL
+    const [downloading, setDownloading] = useState(null);
     const fileInputRef = useRef(null);
 
     const fetchFiles = useCallback(async () => {
@@ -267,7 +264,7 @@ const FilesPage = () => {
         if (!file) return;
         
         setError('');
-        if (file.size > 20 * 1024 * 1024) { // 20MB limit
+        if (file.size > 20 * 1024 * 1024) {
             setError("Le fichier est trop volumineux (max 20MB).");
             return;
         }
@@ -293,22 +290,18 @@ const FilesPage = () => {
     const handleDownload = async (file) => {
         try {
             setDownloading(file.id);
-            // On utilise fetchWithAuth pour que la requête soit authentifiée
             const res = await fetchWithAuth(`/${file.path}`);
             if (!res.ok) throw new Error("Le téléchargement a échoué.");
             
-            // On transforme la réponse en un "blob" (un objet de données brutes)
             const blob = await res.blob();
-            // On crée une URL temporaire pour ce blob
             const url = window.URL.createObjectURL(blob);
-            // On crée un lien <a> invisible
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', file.name); // On lui dit de télécharger avec le bon nom
+            link.setAttribute('download', file.name);
             document.body.appendChild(link);
-            link.click(); // On clique sur le lien pour lancer le téléchargement
-            link.parentNode.removeChild(link); // On nettoie en supprimant le lien
-            window.URL.revokeObjectURL(url); // On libère la mémoire
+            link.click();
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
         } catch (err) {
             setError("Erreur de téléchargement : " + err.message);
         } finally {
