@@ -20,6 +20,7 @@ const LogoutIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg"
 const DownloadIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>;
 const SendIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
 const MenuIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>;
+const BackIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>;
 const AppLogo = () => <svg height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>;
 const SunIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>;
 const MoonIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>;
@@ -355,7 +356,7 @@ const FilesPage = () => {
 const ChatPage = ({ currentUser, socket }) => {
     const { fetchWithAuth } = useApi();
     const [users, setUsers] = useState([]);
-    const [activeChat, setActiveChat] = useState({ type: 'public', id: 'public', name: 'Canal Public' });
+    const [activeChat, setActiveChat] = useState(null); // **CHANGEMENT ICI**: null par défaut
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
     const messagesEndRef = useRef(null);
@@ -369,7 +370,7 @@ const ChatPage = ({ currentUser, socket }) => {
     }, [fetchWithAuth]);
 
     useEffect(() => {
-        if (!activeChat.id || !socket) return;
+        if (!activeChat || !socket) return;
         socket.emit('join_chat', activeChat.id);
         const handleChatHistory = (history) => setMessages(history);
         const handleNewMessage = (message) => {
@@ -383,7 +384,7 @@ const ChatPage = ({ currentUser, socket }) => {
             socket.off('chat_history', handleChatHistory);
             socket.off('receive_message', handleNewMessage);
         };
-    }, [activeChat.id, socket]);
+    }, [activeChat, socket]);
 
     useEffect(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -391,59 +392,70 @@ const ChatPage = ({ currentUser, socket }) => {
 
     const getPrivateChatId = (uid1, uid2) => [uid1, uid2].sort().join('_');
     const selectChat = (user) => {
-        const chatId = getPrivateChatId(currentUser.uid, user.uid);
-        setActiveChat({ type: 'private', id: chatId, name: `Chat avec ${user.displayName}` });
+        if(user === 'public') {
+            setActiveChat({ type: 'public', id: 'public', name: 'Canal Public' });
+        } else {
+            const chatId = getPrivateChatId(currentUser.uid, user.uid);
+            setActiveChat({ type: 'private', id: chatId, name: `Chat avec ${user.displayName}` });
+        }
     };
 
     const handleSendMessage = (e) => {
         e.preventDefault();
-        if (newMessage.trim() === '' || !socket) return;
+        if (newMessage.trim() === '' || !socket || !activeChat) return;
         socket.emit('send_message', { chatId: activeChat.id, senderId: currentUser.uid, senderName: currentUser.displayName, text: newMessage });
         setNewMessage('');
     };
 
     return (
-        // **CHANGEMENT ICI** : Ajout de classes pour une meilleure gestion du flex sur mobile
-        <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
-            <div className="w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 flex flex-col">
+        <div className="flex flex-row h-[calc(100vh-8rem)] bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+            {/* **CHANGEMENT ICI**: La logique d'affichage est maintenant conditionnelle */}
+            <div className={`w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 flex-col ${activeChat ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-slate-200 dark:border-slate-700">
                     <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">Discussions</h2>
                 </div>
                 <ul className="overflow-y-auto">
-                    <li onClick={() => setActiveChat({ type: 'public', id: 'public', name: 'Canal Public' })} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === 'public' ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                    <li onClick={() => selectChat('public')} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat?.id === 'public' ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                         # Canal Public
                     </li>
                     {users.filter(u => u.uid !== currentUser.uid).map(user => (
-                        <li key={user.uid} onClick={() => selectChat(user)} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === getPrivateChatId(currentUser.uid, user.uid) ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
+                        <li key={user.uid} onClick={() => selectChat(user)} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat?.id === getPrivateChatId(currentUser.uid, user.uid) ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                             {user.displayName}
                         </li>
                     ))}
                 </ul>
             </div>
-            {/* **CHANGEMENT ICI** : Ajout de flex-grow et min-h-0 pour forcer ce conteneur à remplir l'espace */}
-            <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col flex-grow min-h-0">
-                <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-                    <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">{activeChat.name}</h2>
-                </div>
-                <div className="flex-grow p-4 overflow-y-auto bg-slate-50 dark:bg-slate-900">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`flex mb-4 ${msg.senderId === currentUser.uid ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`rounded-xl px-4 py-2 max-w-xs md:max-w-md shadow-sm ${msg.senderId === currentUser.uid ? 'bg-sky-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200'}`}>
-                                <p className="font-bold text-sm">{msg.senderName}</p>
-                                <p className="break-words">{msg.text}</p>
-                                <p className={`text-xs mt-1 text-right ${msg.senderId === currentUser.uid ? 'text-sky-200' : 'text-slate-400 dark:text-slate-500'}`}>{new Date(msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute:'2-digit' })}</p>
+            
+            {/* **CHANGEMENT ICI**: La logique d'affichage est maintenant conditionnelle */}
+            {activeChat && (
+                <div className={`w-full flex-col flex-grow min-h-0 ${activeChat ? 'flex' : 'hidden md:flex'}`}>
+                    <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center">
+                        {/* Bouton retour pour mobile */}
+                        <button onClick={() => setActiveChat(null)} className="mr-4 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 md:hidden">
+                            <BackIcon className="h-6 w-6" />
+                        </button>
+                        <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">{activeChat.name}</h2>
+                    </div>
+                    <div className="flex-grow p-4 overflow-y-auto bg-slate-50 dark:bg-slate-900">
+                        {messages.map((msg, index) => (
+                            <div key={index} className={`flex mb-4 ${msg.senderId === currentUser.uid ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`rounded-xl px-4 py-2 max-w-xs md:max-w-md shadow-sm ${msg.senderId === currentUser.uid ? 'bg-sky-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200'}`}>
+                                    <p className="font-bold text-sm">{msg.senderName}</p>
+                                    <p className="break-words">{msg.text}</p>
+                                    <p className={`text-xs mt-1 text-right ${msg.senderId === currentUser.uid ? 'text-sky-200' : 'text-slate-400 dark:text-slate-500'}`}>{new Date(msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute:'2-digit' })}</p>
+                                </div>
                             </div>
-                        </div>
-                    ))}
-                    <div ref={messagesEndRef} />
+                        ))}
+                        <div ref={messagesEndRef} />
+                    </div>
+                    <div className="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
+                        <form onSubmit={handleSendMessage} className="flex">
+                            <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Écrire un message..." className="flex-grow bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200"/>
+                            <button type="submit" className="bg-sky-500 text-white px-4 rounded-r-lg hover:bg-sky-600 flex items-center justify-center transition-colors"><SendIcon/></button>
+                        </form>
+                    </div>
                 </div>
-                <div className="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
-                    <form onSubmit={handleSendMessage} className="flex">
-                        <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Écrire un message..." className="flex-grow bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200"/>
-                        <button type="submit" className="bg-sky-500 text-white px-4 rounded-r-lg hover:bg-sky-600 flex items-center justify-center transition-colors"><SendIcon/></button>
-                    </form>
-                </div>
-            </div>
+            )}
         </div>
     );
 };
@@ -793,7 +805,7 @@ export default function App() {
             <div className={`fixed inset-0 z-30 transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'bg-black bg-opacity-50' : 'bg-opacity-0 pointer-events-none'}`} onClick={() => setSidebarOpen(false)}></div>
             <aside className={`fixed top-0 left-0 h-full w-64 bg-slate-900 z-40 transform transition-transform duration-300 md:hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>{sidebarContent}</aside>
 
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 flex flex-col min-h-0">
                 <header className="md:hidden h-16 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between px-4 flex-shrink-0 border-b border-slate-200 dark:border-slate-700 transition-colors">
                      <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                         <MenuIcon className="h-6 w-6 text-slate-700 dark:text-slate-300" />
