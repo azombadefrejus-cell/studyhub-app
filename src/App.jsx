@@ -21,6 +21,9 @@ const DownloadIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/sv
 const SendIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>;
 const MenuIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>;
 const AppLogo = () => <svg height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"></path></svg>;
+const SunIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>;
+const MoonIcon = (props) => <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>;
+
 
 // --- Helper Hook for API calls ---
 const useApi = () => {
@@ -55,7 +58,9 @@ const LoadingSpinner = () => <div className="animate-spin rounded-full h-16 w-16
 const SmallLoadingSpinner = () => <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>;
 const MessageBox = ({ message, type, onDismiss }) => {
     if (!message) return null;
-    const colors = type === 'error' ? 'bg-red-100 border-red-500 text-red-700' : 'bg-green-100 border-green-500 text-green-700';
+    const colors = type === 'error' 
+        ? 'bg-red-100 dark:bg-red-900/30 border-red-500 text-red-700 dark:text-red-300' 
+        : 'bg-green-100 dark:bg-green-900/30 border-green-500 text-green-700 dark:text-green-300';
     return (
         <div className={`p-4 my-4 border-l-4 rounded-r-md flex justify-between items-center ${colors}`} role="alert">
             <p>{message}</p>
@@ -99,36 +104,36 @@ const AuthPage = ({ onLoginSuccess }) => {
     };
 
     return (
-        <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-4">
-            <div className="flex items-center gap-3 mb-8 text-3xl font-bold text-slate-800">
+        <div className="min-h-screen bg-slate-100 dark:bg-slate-900 flex flex-col items-center justify-center p-4 transition-colors">
+            <div className="flex items-center gap-3 mb-8 text-3xl font-bold text-slate-800 dark:text-slate-200">
                 <AppLogo />
                 <h1>Study Hub</h1>
             </div>
-            <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold text-center text-slate-800 mb-6">{isLogin ? 'Connexion' : 'Inscription'}</h2>
+            <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold text-center text-slate-800 dark:text-slate-200 mb-6">{isLogin ? 'Connexion' : 'Inscription'}</h2>
                 {error && <MessageBox message={error} type="error" onDismiss={() => setError('')} />}
                 {message && <MessageBox message={message} type="success" onDismiss={() => setMessage('')} />}
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {!isLogin && (
                         <div>
-                            <label className="block text-slate-700 font-semibold mb-2">Nom d'utilisateur</label>
-                            <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow" required />
+                            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Nom d'utilisateur</label>
+                            <input type="text" value={displayName} onChange={(e) => setDisplayName(e.target.value)} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200" required />
                         </div>
                     )}
                     <div>
-                        <label className="block text-slate-700 font-semibold mb-2">Email</label>
-                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow" required />
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Email</label>
+                        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200" required />
                     </div>
                     <div>
-                        <label className="block text-slate-700 font-semibold mb-2">Mot de passe</label>
-                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow" required />
+                        <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Mot de passe</label>
+                        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200" required />
                     </div>
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                         <button type="submit" disabled={loading} className="w-full sm:w-auto bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-6 rounded-lg disabled:bg-sky-300 flex items-center justify-center transition-colors shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2">
                             {loading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>}
                             {isLogin ? 'Se connecter' : 'S\'inscrire'}
                         </button>
-                        <a href="#" onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }} className="font-semibold text-sm text-sky-500 hover:text-sky-700 transition-colors">
+                        <a href="#" onClick={() => { setIsLogin(!isLogin); setError(''); setMessage(''); }} className="font-semibold text-sm text-sky-500 hover:text-sky-700 dark:hover:text-sky-400 transition-colors">
                             {isLogin ? 'Créer un compte' : 'J\'ai déjà un compte'}
                         </a>
                     </div>
@@ -179,38 +184,38 @@ const HomePage = ({ currentUser, handleSetPage, socket }) => {
     }, [fetchData, socket]);
 
     const StatCard = ({ icon: Icon, title, value, color }) => (
-        <div className={`bg-white p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:shadow-lg hover:-translate-y-1`}>
+        <div className={`bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md flex items-center gap-4 transition-all hover:shadow-lg hover:-translate-y-1`}>
             <div className={`p-3 rounded-full ${color}`}>
                 <Icon className="h-6 w-6 text-white" />
             </div>
             <div>
-                <p className="text-slate-500 font-semibold">{title}</p>
-                <p className="text-2xl font-bold text-slate-800">{value}</p>
+                <p className="text-slate-500 dark:text-slate-400 font-semibold">{title}</p>
+                <p className="text-2xl font-bold text-slate-800 dark:text-slate-200">{value}</p>
             </div>
         </div>
     );
     
     return (
         <div className="space-y-8">
-            <div className="bg-white p-6 rounded-xl shadow-md">
-                <h1 className="text-2xl md:text-3xl font-bold text-slate-800">
-                    Bienvenue, <span className="text-sky-600">{currentUser.displayName}</span> !
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md">
+                <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200">
+                    Bienvenue, <span className="text-sky-500 dark:text-sky-400">{currentUser.displayName}</span> !
                 </h1>
-                <p className="text-slate-500 mt-1">Ravi de vous revoir. Voici un résumé de l'activité du groupe.</p>
+                <p className="text-slate-500 dark:text-slate-400 mt-1">Ravi de vous revoir. Voici un résumé de l'activité du groupe.</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <div className="lg:col-span-2 space-y-8">
-                    <div className="bg-white p-6 rounded-xl shadow-md">
-                        <h2 className="text-xl font-semibold text-slate-700 mb-4">Dernières Actualités</h2>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md">
+                        <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Dernières Actualités</h2>
                         <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                              {events.length > 0 ? events.map(event => (
-                                <div key={event.id} className="p-4 bg-slate-50 rounded-lg">
-                                    <h3 className="font-semibold text-sky-600">{event.title}</h3>
-                                    <p className="text-sm text-slate-500 mb-1">{new Date(event.createdAt).toLocaleDateString('fr-FR')}</p>
-                                    <p className="text-sm text-slate-600 whitespace-pre-wrap">{event.content}</p>
+                                <div key={event.id} className="p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                                    <h3 className="font-semibold text-sky-600 dark:text-sky-400">{event.title}</h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mb-1">{new Date(event.createdAt).toLocaleDateString('fr-FR')}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-300 whitespace-pre-wrap">{event.content}</p>
                                 </div>
-                            )) : <p className="text-slate-500 text-center py-8">Aucune actualité pour le moment.</p>}
+                            )) : <p className="text-slate-500 dark:text-slate-400 text-center py-8">Aucune actualité pour le moment.</p>}
                         </div>
                     </div>
                 </div>
@@ -221,17 +226,17 @@ const HomePage = ({ currentUser, handleSetPage, socket }) => {
                         <StatCard icon={UsersIcon} title="Membres Inscrits" value={stats.userCount} color="bg-sky-500" />
                         <StatCard icon={FileIcon} title="Fichiers Partagés" value={stats.fileCount} color="bg-emerald-500" />
                     </div>
-                    <div className="bg-white p-6 rounded-xl shadow-md">
-                         <h2 className="text-xl font-semibold text-slate-700 mb-4">Derniers Fichiers</h2>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md">
+                         <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Derniers Fichiers</h2>
                          <ul className="space-y-3">
                             {latestFiles.length > 0 ? latestFiles.map(file => (
-                                <li key={file.id} className="p-3 bg-slate-50 rounded-lg">
-                                    <p className="font-semibold text-slate-800 truncate">{file.name}</p>
-                                    <p className="text-sm text-slate-500">par {file.uploaderName}</p>
+                                <li key={file.id} className="p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                                    <p className="font-semibold text-slate-800 dark:text-slate-200 truncate">{file.name}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">par {file.uploaderName}</p>
                                 </li>
-                            )) : <p className="text-slate-500 text-center py-4">Aucun fichier récent.</p>}
+                            )) : <p className="text-slate-500 dark:text-slate-400 text-center py-4">Aucun fichier récent.</p>}
                          </ul>
-                         <button onClick={() => handleSetPage('files')} className="mt-4 w-full text-center bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-2 px-4 rounded-lg transition-colors">
+                         <button onClick={() => handleSetPage('files')} className="mt-4 w-full text-center bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold py-2 px-4 rounded-lg transition-colors">
                             Voir tous les fichiers
                          </button>
                     </div>
@@ -319,27 +324,27 @@ const FilesPage = () => {
 
     return (
         <div className="max-w-4xl mx-auto">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Partage de Fichiers</h1>
-            <div className="bg-white p-6 rounded-xl shadow-md mb-6 transition-shadow hover:shadow-lg">
-                <h2 className="text-xl font-semibold text-slate-700 mb-4">Envoyer un nouveau fichier</h2>
-                <input type="file" ref={fileInputRef} onChange={handleUpload} disabled={uploading} className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 disabled:opacity-50 transition-colors" />
-                {uploading && <p className="text-sky-600 mt-2 font-semibold">Envoi en cours...</p>}
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6">Partage de Fichiers</h1>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md mb-6 transition-shadow hover:shadow-lg">
+                <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Envoyer un nouveau fichier</h2>
+                <input type="file" ref={fileInputRef} onChange={handleUpload} disabled={uploading} className="block w-full text-sm text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-sky-50 dark:file:bg-sky-900/50 file:text-sky-700 dark:file:text-sky-300 hover:file:bg-sky-100 dark:hover:file:bg-sky-900 disabled:opacity-50 transition-colors" />
+                {uploading && <p className="text-sky-600 dark:text-sky-400 mt-2 font-semibold">Envoi en cours...</p>}
                 {error && <MessageBox message={error} type="error" onDismiss={() => setError('')}/>}
             </div>
-            <div className="bg-white p-6 rounded-xl shadow-md transition-shadow hover:shadow-lg">
-                <h2 className="text-xl font-semibold text-slate-700 mb-4">Fichiers Disponibles</h2>
+            <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-md transition-shadow hover:shadow-lg">
+                <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Fichiers Disponibles</h2>
                 <ul className="space-y-3">
                     {files.length > 0 ? files.map(file => (
-                        <li key={file.id} className="flex items-center justify-between p-4 bg-slate-50 rounded-lg transition-all duration-200 hover:bg-slate-100 hover:scale-[1.02]">
+                        <li key={file.id} className="flex items-center justify-between p-4 bg-slate-100 dark:bg-slate-700/50 rounded-lg transition-all duration-200 hover:bg-slate-200 dark:hover:bg-slate-700 hover:scale-[1.02]">
                             <div>
-                                <p className="font-semibold text-slate-800 break-all">{file.name}</p>
-                                <p className="text-sm text-slate-500">Par {file.uploaderName} - {formatFileSize(file.size)}</p>
+                                <p className="font-semibold text-slate-800 dark:text-slate-200 break-all">{file.name}</p>
+                                <p className="text-sm text-slate-500 dark:text-slate-400">Par {file.uploaderName} - {formatFileSize(file.size)}</p>
                             </div>
                             <button onClick={() => handleDownload(file)} disabled={downloading === file.id} className="ml-4 flex-shrink-0 bg-sky-500 hover:bg-sky-600 text-white p-2.5 rounded-full inline-flex items-center justify-center transition-transform hover:scale-110 shadow-sm disabled:bg-sky-300 disabled:scale-100">
                                 {downloading === file.id ? <SmallLoadingSpinner /> : <DownloadIcon />}
                             </button>
                         </li>
-                    )) : <p className="text-slate-500 text-center py-8">Aucun fichier partagé pour le moment.</p>}
+                    )) : <p className="text-slate-500 dark:text-slate-400 text-center py-8">Aucun fichier partagé pour le moment.</p>}
                 </ul>
             </div>
         </div>
@@ -398,41 +403,41 @@ const ChatPage = ({ currentUser, socket }) => {
     };
 
     return (
-        <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col">
-                <div className="p-4 border-b border-slate-200">
-                    <h2 className="font-bold text-lg text-slate-800">Discussions</h2>
+        <div className="flex flex-col md:flex-row h-[calc(100vh-8rem)] bg-white dark:bg-slate-800 rounded-xl shadow-lg overflow-hidden">
+            <div className="w-full md:w-1/3 lg:w-1/4 border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-700 flex flex-col">
+                <div className="p-4 border-b border-slate-200 dark:border-slate-700">
+                    <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">Discussions</h2>
                 </div>
                 <ul className="overflow-y-auto">
-                    <li onClick={() => setActiveChat({ type: 'public', id: 'public', name: 'Canal Public' })} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === 'public' ? 'bg-sky-50 text-sky-700' : 'text-slate-600 hover:bg-slate-100'}`}>
+                    <li onClick={() => setActiveChat({ type: 'public', id: 'public', name: 'Canal Public' })} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === 'public' ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                         # Canal Public
                     </li>
                     {users.filter(u => u.uid !== currentUser.uid).map(user => (
-                        <li key={user.uid} onClick={() => selectChat(user)} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === getPrivateChatId(currentUser.uid, user.uid) ? 'bg-sky-50 text-sky-700' : 'text-slate-600 hover:bg-slate-100'}`}>
+                        <li key={user.uid} onClick={() => selectChat(user)} className={`p-4 cursor-pointer font-semibold transition-colors ${activeChat.id === getPrivateChatId(currentUser.uid, user.uid) ? 'bg-sky-50 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700'}`}>
                             {user.displayName}
                         </li>
                     ))}
                 </ul>
             </div>
-            <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col bg-slate-50">
-                <div className="p-4 border-b border-slate-200 bg-white">
-                    <h2 className="font-bold text-lg text-slate-800">{activeChat.name}</h2>
+            <div className="w-full md:w-2/3 lg:w-3/4 flex flex-col bg-slate-50 dark:bg-slate-900">
+                <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
+                    <h2 className="font-bold text-lg text-slate-800 dark:text-slate-200">{activeChat.name}</h2>
                 </div>
                 <div className="flex-grow p-4 overflow-y-auto">
                     {messages.map((msg, index) => (
                         <div key={index} className={`flex mb-4 ${msg.senderId === currentUser.uid ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`rounded-xl px-4 py-2 max-w-xs md:max-w-md shadow-sm ${msg.senderId === currentUser.uid ? 'bg-sky-500 text-white' : 'bg-white text-slate-700'}`}>
+                            <div className={`rounded-xl px-4 py-2 max-w-xs md:max-w-md shadow-sm ${msg.senderId === currentUser.uid ? 'bg-sky-500 text-white' : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200'}`}>
                                 <p className="font-bold text-sm">{msg.senderName}</p>
                                 <p className="break-words">{msg.text}</p>
-                                <p className={`text-xs mt-1 text-right ${msg.senderId === currentUser.uid ? 'text-sky-200' : 'text-slate-400'}`}>{new Date(msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute:'2-digit' })}</p>
+                                <p className={`text-xs mt-1 text-right ${msg.senderId === currentUser.uid ? 'text-sky-200' : 'text-slate-400 dark:text-slate-500'}`}>{new Date(msg.createdAt).toLocaleTimeString('fr-FR', { hour: '2-digit', minute:'2-digit' })}</p>
                             </div>
                         </div>
                     ))}
                     <div ref={messagesEndRef} />
                 </div>
-                <div className="p-4 bg-white border-t border-slate-200">
+                <div className="p-4 bg-white dark:bg-slate-800 border-t border-slate-200 dark:border-slate-700">
                     <form onSubmit={handleSendMessage} className="flex">
-                        <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Écrire un message..." className="flex-grow border-slate-300 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow"/>
+                        <input type="text" value={newMessage} onChange={(e) => setNewMessage(e.target.value)} placeholder="Écrire un message..." className="flex-grow bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded-l-lg p-2 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-shadow text-slate-800 dark:text-slate-200"/>
                         <button type="submit" className="bg-sky-500 text-white px-4 rounded-r-lg hover:bg-sky-600 flex items-center justify-center transition-colors"><SendIcon/></button>
                     </form>
                 </div>
@@ -495,32 +500,32 @@ const ProfilePage = ({ currentUser, fetchUser }) => {
     
     return (
         <div className="max-w-2xl mx-auto">
-             <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Mon Profil</h1>
+             <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6">Mon Profil</h1>
              {error && <MessageBox message={error} type="error" onDismiss={() => setError('')}/>}
              {message && <MessageBox message={message} type="success" onDismiss={() => setMessage('')}/>}
-             <div className="bg-white p-8 rounded-xl shadow-lg">
+             <div className="bg-white dark:bg-slate-800 p-8 rounded-xl shadow-lg">
                 <form onSubmit={handleSubmit}>
                     <div className="space-y-4">
-                        <h2 className="text-xl font-semibold text-slate-700">Mes Informations</h2>
+                        <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300">Mes Informations</h2>
                         <div>
-                            <label className="block text-slate-700 font-semibold mb-2">Nom d'utilisateur</label>
-                            <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Nom d'utilisateur</label>
+                            <input type="text" value={displayName} onChange={e => setDisplayName(e.target.value)} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200" />
                         </div>
                         <div>
-                            <label className="block text-slate-700 font-semibold mb-2">Email</label>
-                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                            <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Email</label>
+                            <input type="email" value={email} onChange={e => setEmail(e.target.value)} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200" />
                         </div>
                     </div>
-                    <div className="border-t border-slate-200 pt-6 mt-6">
-                         <h2 className="text-xl font-semibold text-slate-700">Changer le mot de passe</h2>
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-6 mt-6">
+                         <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300">Changer le mot de passe</h2>
                          <div className="mt-4 space-y-4">
                             <div>
-                                <label className="block text-slate-700 font-semibold mb-2">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
-                                <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Nouveau mot de passe (laisser vide pour ne pas changer)</label>
+                                <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200" />
                             </div>
                              <div>
-                                <label className="block text-slate-700 font-semibold mb-2">Confirmer le nouveau mot de passe</label>
-                                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Confirmer le nouveau mot de passe</label>
+                                <input type="password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} placeholder="••••••••" className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200" />
                             </div>
                          </div>
                     </div>
@@ -579,36 +584,36 @@ const AdminPage = () => {
     
     const StatusBadge = ({ status }) => {
         const colors = {
-            approved: 'bg-green-100 text-green-800',
-            pending: 'bg-yellow-100 text-yellow-800',
-            banned: 'bg-red-100 text-red-800',
+            approved: 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300',
+            pending: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300',
+            banned: 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300',
         };
         return <span className={`px-2 py-1 text-xs font-semibold rounded-full ${colors[status]}`}>{status}</span>
     }
 
     return (
         <div className="max-w-6xl mx-auto">
-            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 mb-6">Panneau d'Administration</h1>
-            <div className="flex border-b border-slate-200 mb-6">
-                <button onClick={() => setView('users')} className={`px-4 py-2 font-semibold ${view === 'users' ? 'border-b-2 border-sky-500 text-sky-600' : 'text-slate-500'}`}>Utilisateurs</button>
-                <button onClick={() => setView('events')} className={`px-4 py-2 font-semibold ${view === 'events' ? 'border-b-2 border-sky-500 text-sky-600' : 'text-slate-500'}`}>Actualités</button>
+            <h1 className="text-2xl md:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-6">Panneau d'Administration</h1>
+            <div className="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+                <button onClick={() => setView('users')} className={`px-4 py-2 font-semibold transition-colors ${view === 'users' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400' : 'text-slate-500 dark:text-slate-400'}`}>Utilisateurs</button>
+                <button onClick={() => setView('events')} className={`px-4 py-2 font-semibold transition-colors ${view === 'events' ? 'border-b-2 border-sky-500 text-sky-600 dark:text-sky-400' : 'text-slate-500 dark:text-slate-400'}`}>Actualités</button>
             </div>
 
             {view === 'users' && (
-                 <div className="bg-white p-6 rounded-xl shadow-lg">
-                    <h2 className="text-xl font-semibold text-slate-700 mb-4">Gérer les utilisateurs</h2>
+                 <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                    <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Gérer les utilisateurs</h2>
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <thead>
-                                <tr className="border-b bg-slate-50">
-                                    <th className="p-3">Nom</th><th className="p-3">Email</th><th className="p-3">Statut</th><th className="p-3">Actions</th>
+                                <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50">
+                                    <th className="p-3 text-slate-800 dark:text-slate-200">Nom</th><th className="p-3 text-slate-800 dark:text-slate-200">Email</th><th className="p-3 text-slate-800 dark:text-slate-200">Statut</th><th className="p-3 text-slate-800 dark:text-slate-200">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {users.map(user => (
-                                    <tr key={user.uid} className="border-b hover:bg-slate-50">
-                                        <td className="p-3 font-semibold">{user.displayName}</td>
-                                        <td className="p-3 text-slate-600">{user.email}</td>
+                                    <tr key={user.uid} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/50">
+                                        <td className="p-3 font-semibold text-slate-800 dark:text-slate-200">{user.displayName}</td>
+                                        <td className="p-3 text-slate-600 dark:text-slate-400">{user.email}</td>
                                         <td className="p-3"><StatusBadge status={user.status} /></td>
                                         <td className="p-3 space-x-2">
                                             {user.status === 'pending' && <button onClick={() => handleUserStatusChange(user.uid, 'approved')} className="text-sm bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded-md">Approuver</button>}
@@ -625,27 +630,27 @@ const AdminPage = () => {
 
             {view === 'events' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div className="bg-white p-6 rounded-xl shadow-lg">
-                        <h2 className="text-xl font-semibold text-slate-700 mb-4">Ajouter une actualité</h2>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                        <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Ajouter une actualité</h2>
                         <form onSubmit={handleEventSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-slate-700 font-semibold mb-2">Titre</label>
-                                <input type="text" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+                                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Titre</label>
+                                <input type="text" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200" />
                             </div>
                              <div>
-                                <label className="block text-slate-700 font-semibold mb-2">Contenu</label>
-                                <textarea value={newEvent.content} onChange={e => setNewEvent({...newEvent, content: e.target.value})} rows="5" className="w-full px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+                                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-2">Contenu</label>
+                                <textarea value={newEvent.content} onChange={e => setNewEvent({...newEvent, content: e.target.value})} rows="5" className="w-full px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-800 dark:text-slate-200"></textarea>
                             </div>
                             <button type="submit" className="bg-sky-500 hover:bg-sky-600 text-white font-bold py-2 px-6 rounded-lg transition-colors shadow-md hover:shadow-lg">Publier</button>
                         </form>
                     </div>
-                    <div className="bg-white p-6 rounded-xl shadow-lg">
-                         <h2 className="text-xl font-semibold text-slate-700 mb-4">Actualités existantes</h2>
+                    <div className="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-lg">
+                         <h2 className="text-xl font-semibold text-slate-700 dark:text-slate-300 mb-4">Actualités existantes</h2>
                          <ul className="space-y-3 max-h-96 overflow-y-auto pr-2">
                             {events.map(event => (
-                                <li key={event.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                                    <p className="font-semibold text-slate-800">{event.title}</p>
-                                    <button onClick={() => deleteEvent(event.id)} className="text-sm bg-slate-200 hover:bg-red-500 hover:text-white text-slate-600 px-3 py-1 rounded-md transition-colors">Supprimer</button>
+                                <li key={event.id} className="flex items-center justify-between p-3 bg-slate-100 dark:bg-slate-700/50 rounded-lg">
+                                    <p className="font-semibold text-slate-800 dark:text-slate-200">{event.title}</p>
+                                    <button onClick={() => deleteEvent(event.id)} className="text-sm bg-slate-200 dark:bg-slate-600 hover:bg-red-500 hover:text-white text-slate-600 dark:text-slate-200 px-3 py-1 rounded-md transition-colors">Supprimer</button>
                                 </li>
                             ))}
                          </ul>
@@ -664,7 +669,17 @@ export default function App() {
     const [page, setPage] = useState('home');
     const [isSidebarOpen, setSidebarOpen] = useState(false);
     const [socket, setSocket] = useState(null);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
 
+    useEffect(() => {
+        if (theme === 'dark') {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+        localStorage.setItem('theme', theme);
+    }, [theme]);
+    
     const { fetchWithAuth } = useApi();
 
     const fetchUser = useCallback(async () => {
@@ -715,8 +730,12 @@ export default function App() {
         setSidebarOpen(false);
     }
 
+    const toggleTheme = () => {
+        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+    }
+
     if (loading) {
-        return <div className="min-h-screen flex items-center justify-center bg-slate-100"><LoadingSpinner /></div>
+        return <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900"><LoadingSpinner /></div>
     }
 
     if (!currentUser) {
@@ -735,7 +754,7 @@ export default function App() {
     };
 
     const NavLink = ({ pageName, icon: Icon, children }) => (
-         <button onClick={() => handleSetPage(pageName)} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors duration-200 ${page === pageName ? 'bg-slate-700 text-white' : 'text-slate-300 hover:bg-slate-700 hover:text-white'}`}>
+         <button onClick={() => handleSetPage(pageName)} className={`w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors duration-200 ${page === pageName ? 'bg-slate-700 text-white' : 'text-slate-400 hover:bg-slate-700 hover:text-white'}`}>
             <Icon className="h-6 w-6" />
             <span>{children}</span>
         </button>
@@ -756,24 +775,28 @@ export default function App() {
                     <NavLink pageName="admin" icon={AdminIcon}>Admin</NavLink>
                 )}
             </nav>
-            <div className="px-4 py-4 border-t border-slate-700">
-                 <button onClick={handleLogout} className="flex items-center space-x-3 w-full text-left px-3 py-2.5 rounded-lg hover:bg-slate-700 transition-colors font-semibold text-slate-300 hover:text-white"><LogoutIcon /><span>Déconnexion</span></button>
+            <div className="px-4 py-4 border-t border-slate-700 space-y-2">
+                <button onClick={toggleTheme} className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors duration-200 text-slate-400 hover:bg-slate-700 hover:text-white font-semibold">
+                    {theme === 'light' ? <MoonIcon className="h-6 w-6" /> : <SunIcon className="h-6 w-6" />}
+                    <span>{theme === 'light' ? 'Thème Sombre' : 'Thème Clair'}</span>
+                </button>
+                <button onClick={handleLogout} className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-lg text-left transition-colors duration-200 text-slate-400 hover:bg-slate-700 hover:text-white font-semibold"><LogoutIcon /><span>Déconnexion</span></button>
             </div>
         </div>
     );
 
     return (
-        <div className="flex h-screen bg-slate-100">
+        <div className="flex h-screen bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors">
             <aside className="hidden md:block md:w-64 flex-shrink-0">{sidebarContent}</aside>
             <div className={`fixed inset-0 z-30 transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'bg-black bg-opacity-50' : 'bg-opacity-0 pointer-events-none'}`} onClick={() => setSidebarOpen(false)}></div>
             <aside className={`fixed top-0 left-0 h-full w-64 bg-slate-900 z-40 transform transition-transform duration-300 md:hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>{sidebarContent}</aside>
 
             <div className="flex-1 flex flex-col">
-                <header className="md:hidden h-16 bg-white shadow-sm flex items-center justify-between px-4 flex-shrink-0">
-                     <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-md hover:bg-slate-100 transition-colors">
-                        <MenuIcon className="h-6 w-6 text-slate-700" />
+                <header className="md:hidden h-16 bg-white dark:bg-slate-800 shadow-sm flex items-center justify-between px-4 flex-shrink-0 border-b border-slate-200 dark:border-slate-700 transition-colors">
+                     <button onClick={() => setSidebarOpen(true)} className="p-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <MenuIcon className="h-6 w-6 text-slate-700 dark:text-slate-300" />
                     </button>
-                    <div className="text-xl font-bold text-sky-600">{page.charAt(0).toUpperCase() + page.slice(1)}</div>
+                    <div className="text-xl font-bold text-sky-600 dark:text-sky-400">{page.charAt(0).toUpperCase() + page.slice(1)}</div>
                      <div className="w-8"></div>
                 </header>
                 
